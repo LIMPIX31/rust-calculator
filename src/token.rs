@@ -87,6 +87,20 @@ pub struct Token {
   pub kind: TokenKind,
 }
 
+impl Token {
+  pub fn new<K: Into<TokenKind>>(span: Span, kind: K) -> Token {
+    let kind = kind.into();
+    Token { span, kind }
+  }
+}
+
+impl<T> From<T> for Token
+  where T: Into<TokenKind> {
+  fn from(other: T) -> Token {
+    Token::new(Span { start: 0, end: 0 }, other)
+  }
+}
+
 struct Tokenizer<'a> {
   index: usize,
   remaining: &'a  str
