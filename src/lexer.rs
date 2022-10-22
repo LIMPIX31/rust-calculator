@@ -162,3 +162,14 @@ pub fn tokenize(src: &str) -> Result<Vec<Token>, TokenizeError> {
 
   Ok(tokens)
 }
+
+#[macro_export]
+macro_rules! token {
+    ($thing:tt) => {
+      {
+        #[allow(unused_imports)]
+        use $crate::lexer::TokenKind::*;
+        $crate::lexer::Token::from($thing)
+      }
+    };
+}
