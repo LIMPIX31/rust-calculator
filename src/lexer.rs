@@ -1,8 +1,7 @@
 use std::str;
 use crate::error::TokenizeError;
-use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug)]
 pub enum TokenKind {
   Integer(usize),
   Float(f64),
@@ -12,18 +11,6 @@ pub enum TokenKind {
   Multiply,
   Open,
   Close
-}
-
-impl From<usize> for TokenKind {
-  fn from(other: usize) -> Self {
-    TokenKind::Integer(other)
-  }
-}
-
-impl From<f64> for TokenKind {
-  fn from(other: f64) -> Self {
-    TokenKind::Float(other)
-  }
 }
 
 pub fn take_while<F: FnMut(char) -> bool>(data: &str, mut predicate: F) -> Result<(&str, usize), TokenizeError> {
@@ -75,30 +62,16 @@ pub fn tokenize_single_token(data: &str) -> Result<(TokenKind, usize), TokenizeE
   Ok((kind, size))
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug)]
 pub struct Span {
   pub start: usize,
   pub end: usize
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug)]
 pub struct Token {
   pub span: Span,
   pub kind: TokenKind,
-}
-
-impl Token {
-  pub fn new<K: Into<TokenKind>>(span: Span, kind: K) -> Token {
-    let kind = kind.into();
-    Token { span, kind }
-  }
-}
-
-impl<T> From<T> for Token
-  where T: Into<TokenKind> {
-  fn from(other: T) -> Token {
-    Token::new(Span { start: 0, end: 0 }, other)
-  }
 }
 
 struct Tokenizer<'a> {
@@ -161,15 +134,4 @@ pub fn tokenize(src: &str) -> Result<Vec<Token>, TokenizeError> {
   }
 
   Ok(tokens)
-}
-
-#[macro_export]
-macro_rules! token {
-    ($thing:tt) => {
-      {
-        #[allow(unused_imports)]
-        use $crate::lexer::TokenKind::*;
-        $crate::lexer::Token::from($thing)
-      }
-    };
 }

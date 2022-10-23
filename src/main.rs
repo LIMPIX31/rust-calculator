@@ -1,6 +1,7 @@
 mod calc;
 pub mod lexer;
 pub mod error;
+pub mod parser;
 
 use std::io::stdin;
 
