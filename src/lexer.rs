@@ -1,3 +1,4 @@
+use std::fmt::{Debug, Formatter};
 use std::str;
 use crate::error::TokenizeError;
 
@@ -68,10 +69,24 @@ pub struct Span {
   pub end: usize
 }
 
-#[derive(Debug)]
 pub struct Token {
   pub span: Span,
   pub kind: TokenKind,
+}
+
+impl Debug for Token {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    match self.kind {
+      TokenKind::Plus => write!(f, "[Plus: +]"),
+      TokenKind::Minus => write!(f, "[Minus: -]"),
+      TokenKind::Multiply => write!(f, "[Multiply: *]"),
+      TokenKind::Divide => write!(f, "[Divide: /]"),
+      TokenKind::Open => write!(f, "[Open: (]"),
+      TokenKind::Close => write!(f, "[Close: )]"),
+      TokenKind::Integer(value) => write!(f, "[Integer: {}]", value),
+      TokenKind::Float(value) => write!(f, "[Float: {}]", value),
+    }
+  }
 }
 
 struct Tokenizer<'a> {
